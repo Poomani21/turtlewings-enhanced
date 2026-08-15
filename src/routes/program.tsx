@@ -72,7 +72,7 @@ function Program() {
               </h2>
             </Reveal>
             <Reveal delay={80} className="mt-6 grid grid-cols-2 gap-3">
-              {programFacts.map((fact) => (
+              {facts.map((fact) => (
                 <div key={fact.label} className="rounded-2xl border border-border bg-card p-4">
                   <p className="text-xs font-bold tracking-wide text-muted-foreground uppercase">
                     {fact.label}
