@@ -1,0 +1,159 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { Check } from "lucide-react";
+import programImg from "@/assets/program-sensory.jpg";
+import { Reveal } from "@/components/site/Reveal";
+import { SectionHeading } from "@/components/site/SectionHeading";
+import { learningDomains, programFacts, programObjectives } from "@/lib/site-content";
+import { PageHero } from "./about";
+import { CtaBand } from "./index";
+
+const title = "Evening Learning Circle — Our Signature Program | Turtle Wings";
+const description =
+  "The Evening Learning Circle is a structured small-group program for children with Autism Spectrum Disorder aged 3–10 years, covering nine learning domains from 5:00 PM to 7:00 PM.";
+
+export const Route = createFileRoute("/program")({
+  head: () => ({
+    meta: [
+      { title },
+      { name: "description", content: description },
+      { property: "og:title", content: title },
+      { property: "og:description", content: description },
+      { property: "og:url", content: "/program" },
+    ],
+    links: [{ rel: "canonical", href: "/program" }],
+  }),
+  component: Program,
+});
+
+function Program() {
+  return (
+    <>
+      <PageHero
+        eyebrow="Our Signature Program"
+        title="Evening Learning Circle"
+        intro="A structured after-school group program that combines movement, play, communication, sensory experiences and foundational academics."
+      />
+
+      <section className="section-pad" aria-labelledby="at-a-glance">
+        <div className="container-site grid items-start gap-10 lg:grid-cols-2">
+          <div>
+            <Reveal>
+              <h2 id="at-a-glance" className="text-3xl sm:text-4xl">
+                At a glance
+              </h2>
+            </Reveal>
+            <Reveal delay={80} className="mt-6 grid grid-cols-2 gap-3">
+              {programFacts.map((fact) => (
+                <div key={fact.label} className="rounded-2xl border border-border bg-card p-4">
+                  <p className="text-xs font-bold tracking-wide text-muted-foreground uppercase">
+                    {fact.label}
+                  </p>
+                  <p className="mt-1 font-display text-lg font-bold text-forest-deep">{fact.value}</p>
+                </div>
+              ))}
+            </Reveal>
+            <Reveal delay={140}>
+              <h3 className="mt-10 text-xl">Program Objectives</h3>
+              <ul className="mt-4 grid gap-2.5 sm:grid-cols-2">
+                {programObjectives.map((objective) => (
+                  <li key={objective} className="flex items-start gap-2 text-sm sm:text-base">
+                    <Check aria-hidden="true" className="mt-1 size-4 shrink-0 text-leaf" />
+                    {objective}
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+          </div>
+          <Reveal
+            variant="right"
+            className="overflow-hidden rounded-3xl border border-border shadow-card"
+          >
+            <img
+              src={programImg}
+              alt="Children taking part in sensory play, balance and hands-on activities with an educator"
+              width={1200}
+              height={912}
+              loading="lazy"
+              className="aspect-[4/3] w-full object-cover"
+            />
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="section-pad bg-accent/40" aria-labelledby="domains">
+        <div className="container-site">
+          <SectionHeading
+            eyebrow="What we cover"
+            title={<span id="domains">The 9 Learning Domains</span>}
+            intro="Every session is carefully planned to support not just academic learning, but the overall development of the child."
+          />
+          <ol className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {learningDomains.map((domain, i) => (
+              <Reveal as="li" key={domain.title} delay={i * 60} className="card-soft p-6">
+                <span className="grid size-11 place-items-center rounded-full bg-secondary font-display text-lg font-extrabold text-secondary-foreground">
+                  {i + 1}
+                </span>
+                <h3 className="mt-4 text-lg">{domain.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{domain.body}</p>
+              </Reveal>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="section-pad" aria-labelledby="admission">
+        <div className="container-site max-w-3xl">
+          <SectionHeading
+            align="left"
+            eyebrow="Joining us"
+            title={<span id="admission">The admission process</span>}
+          />
+          <ol className="mt-8 space-y-4">
+            {[
+              {
+                step: "Parent Consultation",
+                body: "The admission process begins with a complimentary Parent Consultation.",
+              },
+              {
+                step: "Admission Assessment",
+                body: "A 45-minute Admission Assessment conducted by an RCI Certified Special Educator determines whether the Evening Group Program is the right fit for your child. This session is chargeable.",
+              },
+              {
+                step: "Observation & guidance",
+                body: "We observe attention, sitting tolerance, following instructions, communication, behaviour, learning readiness, and comfort in a small group — then discuss the most appropriate next steps with you.",
+              },
+            ].map((item, i) => (
+              <Reveal
+                as="li"
+                key={item.step}
+                delay={i * 80}
+                className="flex gap-4 rounded-2xl border border-border bg-card p-5 shadow-card"
+              >
+                <span className="grid size-10 shrink-0 place-items-center rounded-full bg-primary font-display font-extrabold text-primary-foreground">
+                  {i + 1}
+                </span>
+                <span className="min-w-0">
+                  <span className="block font-display text-lg font-bold text-forest-deep">
+                    {item.step}
+                  </span>
+                  <span className="mt-1 block text-sm leading-relaxed text-muted-foreground">
+                    {item.body}
+                  </span>
+                </span>
+              </Reveal>
+            ))}
+          </ol>
+          <Reveal delay={120} className="mt-8 rounded-2xl bg-muted p-5 text-sm text-muted-foreground">
+            <p>
+              Please note: Turtle Wings is a special education centre focused on structured learning
+              and developmental support. We do not currently provide Speech Therapy, Occupational
+              Therapy, or ABA Therapy.
+            </p>
+          </Reveal>
+        </div>
+      </section>
+
+      <CtaBand />
+    </>
+  );
+}
