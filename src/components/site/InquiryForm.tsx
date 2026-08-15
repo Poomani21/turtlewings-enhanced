@@ -56,17 +56,23 @@ export function InquiryForm() {
       return;
     }
 
+    if (status === "loading") return;
     setStatus("loading");
     try {
-      if (ENDPOINT) {
-        const res = await fetch(ENDPOINT, { method: "POST", body: data });
-        if (!res.ok) throw new Error("Request failed");
-      } else {
-        await new Promise((r) => setTimeout(r, 700));
-      }
+      await submitEnquiry({
+        name: String(data.get("name") ?? "").trim(),
+        email: String(data.get("email") ?? "").trim(),
+        phone: String(data.get("phone") ?? "").trim(),
+        childAge: String(data.get("childAge") ?? "").trim(),
+        area: String(data.get("area") ?? "").trim(),
+        program: String(data.get("program") ?? "").trim(),
+        preferredContact: String(data.get("preferredContact") ?? "").trim(),
+        message: String(data.get("message") ?? "").trim(),
+      });
       setStatus("success");
       form.reset();
-    } catch {
+    } catch (error) {
+      console.error("Enquiry submission failed", error);
       setStatus("error");
     }
   }
