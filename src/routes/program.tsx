@@ -28,6 +28,33 @@ export const Route = createFileRoute("/program")({
 });
 
 function Program() {
+  const programs = useQuery({ queryKey: ["programs", "active"], queryFn: fetchActivePrograms });
+  const settings = useQuery({ queryKey: ["settings", "site"], queryFn: fetchSiteSettings });
+
+  const s = settings.data ?? {};
+  const list = programs.data ?? [];
+  const first = list[0];
+
+  // Schedule facts come from Site settings / the first active program when
+  // available; the static copy stays as the fallback.
+  const ageGroup = s.ageGroup ?? first?.ageGroup;
+  const timing =
+    s.startTime && s.endTime
+      ? `${s.startTime} – ${s.endTime}`
+      : first?.startTime && first.endTime
+        ? `${first.startTime} – ${first.endTime}`
+        : undefined;
+  const seats = s.maxChildren ?? first?.maxChildren;
+  const facts = programFacts.map((fact) =>
+    fact.label === "Age Group" && ageGroup
+      ? { ...fact, value: ageGroup }
+      : fact.label === "Timing" && timing
+        ? { ...fact, value: timing }
+        : fact.label === "Seats" && seats
+          ? { ...fact, value: `${seats} children` }
+          : fact,
+  );
+
   return (
     <>
       <PageHero
