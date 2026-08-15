@@ -109,6 +109,80 @@ function Program() {
         </div>
       </section>
 
+      {list.length > 0 ? (
+        <section className="section-pad" aria-labelledby="schedule">
+          <div className="container-site">
+            <SectionHeading
+              eyebrow="Current schedule"
+              title={<span id="schedule">Programs running now</span>}
+              intro="Group timings and age bands as scheduled at the centre."
+            />
+            <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {list.map((program, i) => (
+                <Reveal as="li" key={program.id} delay={i * 60} className="card-soft overflow-hidden">
+                  {program.image ? (
+                    <img
+                      src={program.image}
+                      alt={program.title}
+                      loading="lazy"
+                      className="aspect-[3/2] w-full object-cover"
+                    />
+                  ) : null}
+                  <div className="p-6">
+                    <h3 className="text-lg">{program.title}</h3>
+                    {program.description ? (
+                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                        {program.description}
+                      </p>
+                    ) : null}
+                    <dl className="mt-4 grid gap-1.5 text-sm">
+                      {program.ageGroup ? (
+                        <div className="flex gap-2">
+                          <dt className="font-bold">Age group:</dt>
+                          <dd className="text-muted-foreground">{program.ageGroup}</dd>
+                        </div>
+                      ) : null}
+                      {program.days ? (
+                        <div className="flex gap-2">
+                          <dt className="font-bold">Days:</dt>
+                          <dd className="text-muted-foreground">{program.days}</dd>
+                        </div>
+                      ) : null}
+                      {program.startTime && program.endTime ? (
+                        <div className="flex gap-2">
+                          <dt className="font-bold">Timing:</dt>
+                          <dd className="text-muted-foreground">
+                            {program.startTime} – {program.endTime}
+                          </dd>
+                        </div>
+                      ) : null}
+                      {program.maxChildren ? (
+                        <div className="flex gap-2">
+                          <dt className="font-bold">Group size:</dt>
+                          <dd className="text-muted-foreground">
+                            Up to {program.maxChildren} children
+                          </dd>
+                        </div>
+                      ) : null}
+                    </dl>
+                    {program.activities?.length ? (
+                      <ul className="mt-4 grid gap-2">
+                        {program.activities.map((activity) => (
+                          <li key={activity} className="flex items-start gap-2 text-sm">
+                            <Check aria-hidden="true" className="mt-1 size-4 shrink-0 text-leaf" />
+                            {activity}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </div>
+                </Reveal>
+              ))}
+            </ul>
+          </div>
+        </section>
+      ) : null}
+
       <section className="section-pad bg-accent/40" aria-labelledby="domains">
         <div className="container-site">
           <SectionHeading
