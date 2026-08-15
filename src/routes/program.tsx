@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { Check } from "lucide-react";
 import programImg from "@/assets/program-sensory.jpg";
 import { Reveal } from "@/components/site/Reveal";
 import { SectionHeading } from "@/components/site/SectionHeading";
 import { learningDomains, programFacts, programObjectives } from "@/lib/site-content";
+import { fetchActivePrograms, fetchSiteSettings } from "@/lib/cms";
 import { PageHero } from "./about";
 import { CtaBand } from "./index";
 
@@ -26,6 +28,33 @@ export const Route = createFileRoute("/program")({
 });
 
 function Program() {
+  const programs = useQuery({ queryKey: ["programs", "active"], queryFn: fetchActivePrograms });
+  const settings = useQuery({ queryKey: ["settings", "site"], queryFn: fetchSiteSettings });
+
+  const s = settings.data ?? {};
+  const list = programs.data ?? [];
+  const first = list[0];
+
+  // Schedule facts come from Site settings / the first active program when
+  // available; the static copy stays as the fallback.
+  const ageGroup = s.ageGroup ?? first?.ageGroup;
+  const timing =
+    s.startTime && s.endTime
+      ? `${s.startTime} – ${s.endTime}`
+      : first?.startTime && first.endTime
+        ? `${first.startTime} – ${first.endTime}`
+        : undefined;
+  const seats = s.maxChildren ?? first?.maxChildren;
+  const facts = programFacts.map((fact) =>
+    fact.label === "Age Group" && ageGroup
+      ? { ...fact, value: ageGroup }
+      : fact.label === "Timing" && timing
+        ? { ...fact, value: timing }
+        : fact.label === "Seats" && seats
+          ? { ...fact, value: `${seats} children` }
+          : fact,
+  );
+
   return (
     <>
       <PageHero
@@ -43,7 +72,7 @@ function Program() {
               </h2>
             </Reveal>
             <Reveal delay={80} className="mt-6 grid grid-cols-2 gap-3">
-              {programFacts.map((fact) => (
+              {facts.map((fact) => (
                 <div key={fact.label} className="rounded-2xl border border-border bg-card p-4">
                   <p className="text-xs font-bold tracking-wide text-muted-foreground uppercase">
                     {fact.label}
@@ -79,6 +108,80 @@ function Program() {
           </Reveal>
         </div>
       </section>
+
+      {list.length > 0 ? (
+        <section className="section-pad" aria-labelledby="schedule">
+          <div className="container-site">
+            <SectionHeading
+              eyebrow="Current schedule"
+              title={<span id="schedule">Programs running now</span>}
+              intro="Group timings and age bands as scheduled at the centre."
+            />
+            <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {list.map((program, i) => (
+                <Reveal as="li" key={program.id} delay={i * 60} className="card-soft overflow-hidden">
+                  {program.image ? (
+                    <img
+                      src={program.image}
+                      alt={program.title}
+                      loading="lazy"
+                      className="aspect-[3/2] w-full object-cover"
+                    />
+                  ) : null}
+                  <div className="p-6">
+                    <h3 className="text-lg">{program.title}</h3>
+                    {program.description ? (
+                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                        {program.description}
+                      </p>
+                    ) : null}
+                    <dl className="mt-4 grid gap-1.5 text-sm">
+                      {program.ageGroup ? (
+                        <div className="flex gap-2">
+                          <dt className="font-bold">Age group:</dt>
+                          <dd className="text-muted-foreground">{program.ageGroup}</dd>
+                        </div>
+                      ) : null}
+                      {program.days ? (
+                        <div className="flex gap-2">
+                          <dt className="font-bold">Days:</dt>
+                          <dd className="text-muted-foreground">{program.days}</dd>
+                        </div>
+                      ) : null}
+                      {program.startTime && program.endTime ? (
+                        <div className="flex gap-2">
+                          <dt className="font-bold">Timing:</dt>
+                          <dd className="text-muted-foreground">
+                            {program.startTime} – {program.endTime}
+                          </dd>
+                        </div>
+                      ) : null}
+                      {program.maxChildren ? (
+                        <div className="flex gap-2">
+                          <dt className="font-bold">Group size:</dt>
+                          <dd className="text-muted-foreground">
+                            Up to {program.maxChildren} children
+                          </dd>
+                        </div>
+                      ) : null}
+                    </dl>
+                    {program.activities?.length ? (
+                      <ul className="mt-4 grid gap-2">
+                        {program.activities.map((activity) => (
+                          <li key={activity} className="flex items-start gap-2 text-sm">
+                            <Check aria-hidden="true" className="mt-1 size-4 shrink-0 text-leaf" />
+                            {activity}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </div>
+                </Reveal>
+              ))}
+            </ul>
+          </div>
+        </section>
+      ) : null}
 
       <section className="section-pad bg-accent/40" aria-labelledby="domains">
         <div className="container-site">

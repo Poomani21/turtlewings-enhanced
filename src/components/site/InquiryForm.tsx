@@ -1,19 +1,15 @@
 import { useState } from "react";
 import { Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { site } from "@/lib/site-content";
+import { submitEnquiry } from "@/lib/cms";
 
 /**
  * Inquiry form.
  *
- * Submission architecture (no secrets in the frontend):
- *   Set VITE_INQUIRY_ENDPOINT to the URL that receives the enquiry.
- *   On WordPress this is typically a WPForms/Fluent Forms/CF7 REST endpoint
- *   (e.g. https://turtlewings.in/wp-json/contact-form-7/v1/contact-forms/123/feedback)
- *   which holds the SMTP credentials server-side.
- *   Until it is configured, the form validates and shows the success state
- *   without sending, so the client can wire it up without code changes.
+ * Submissions are written to the Firestore `enquiries` collection through
+ * submitEnquiry() and appear in Admin → Enquiries. The success state is only
+ * shown once the write actually succeeds; failures show the error state.
  */
-const ENDPOINT = import.meta.env["VITE_INQUIRY_ENDPOINT"] as string | undefined;
 
 type Errors = Partial<Record<string, string>>;
 
@@ -60,17 +56,23 @@ export function InquiryForm() {
       return;
     }
 
+    if (status === "loading") return;
     setStatus("loading");
     try {
-      if (ENDPOINT) {
-        const res = await fetch(ENDPOINT, { method: "POST", body: data });
-        if (!res.ok) throw new Error("Request failed");
-      } else {
-        await new Promise((r) => setTimeout(r, 700));
-      }
+      await submitEnquiry({
+        name: String(data.get("name") ?? "").trim(),
+        email: String(data.get("email") ?? "").trim(),
+        phone: String(data.get("phone") ?? "").trim(),
+        childAge: String(data.get("childAge") ?? "").trim(),
+        area: String(data.get("area") ?? "").trim(),
+        program: String(data.get("program") ?? "").trim(),
+        preferredContact: String(data.get("preferredContact") ?? "").trim(),
+        message: String(data.get("message") ?? "").trim(),
+      });
       setStatus("success");
       form.reset();
-    } catch {
+    } catch (error) {
+      console.error("Enquiry submission failed", error);
       setStatus("error");
     }
   }
