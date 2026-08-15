@@ -16,6 +16,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ProgramRouteImport } from './routes/program'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as VideosRouteImport } from './routes/videos'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminBlogRouteImport } from './routes/admin.blog'
 import { Route as AdminEnquiriesRouteImport } from './routes/admin.enquiries'
@@ -60,6 +61,11 @@ const ProgramRoute = ProgramRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VideosRoute = VideosRouteImport.update({
+  id: '/videos',
+  path: '/videos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -121,6 +127,7 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/program': typeof ProgramRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/videos': typeof VideosRoute
   '/admin/blog': typeof AdminBlogRoute
   '/admin/enquiries': typeof AdminEnquiriesRoute
   '/admin/members': typeof AdminMembersRoute
@@ -139,6 +146,7 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/program': typeof ProgramRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/videos': typeof VideosRoute
   '/admin/blog': typeof AdminBlogRoute
   '/admin/enquiries': typeof AdminEnquiriesRoute
   '/admin/members': typeof AdminMembersRoute
@@ -159,6 +167,7 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/program': typeof ProgramRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/videos': typeof VideosRoute
   '/admin/blog': typeof AdminBlogRoute
   '/admin/enquiries': typeof AdminEnquiriesRoute
   '/admin/members': typeof AdminMembersRoute
@@ -180,6 +189,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/program'
     | '/sitemap.xml'
+    | '/videos'
     | '/admin/blog'
     | '/admin/enquiries'
     | '/admin/members'
@@ -198,6 +208,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/program'
     | '/sitemap.xml'
+    | '/videos'
     | '/admin/blog'
     | '/admin/enquiries'
     | '/admin/members'
@@ -217,6 +228,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/program'
     | '/sitemap.xml'
+    | '/videos'
     | '/admin/blog'
     | '/admin/enquiries'
     | '/admin/members'
@@ -237,6 +249,7 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   ProgramRoute: typeof ProgramRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  VideosRoute: typeof VideosRoute
   BlogSlugRoute: typeof BlogSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
   ApiPublicFirebaseConfigRoute: typeof ApiPublicFirebaseConfigRoute
@@ -291,6 +304,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/videos': {
+      id: '/videos'
+      path: '/videos'
+      fullPath: '/videos'
+      preLoaderRoute: typeof VideosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -396,6 +416,7 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   ProgramRoute: ProgramRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  VideosRoute: VideosRoute,
   BlogSlugRoute: BlogSlugRoute,
   BlogIndexRoute: BlogIndexRoute,
   ApiPublicFirebaseConfigRoute: ApiPublicFirebaseConfigRoute,
