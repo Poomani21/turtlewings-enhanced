@@ -221,5 +221,6 @@ export const navLinks = [
   { to: "/program", label: "Program" },
   { to: "/faq", label: "FAQs" },
   { to: "/blog", label: "Blog" },
+  { to: "/videos", label: "Videos" },
   { to: "/contact", label: "Contact" },
 ] as const;
