@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { Check } from "lucide-react";
 import programImg from "@/assets/program-sensory.jpg";
 import { Reveal } from "@/components/site/Reveal";
 import { SectionHeading } from "@/components/site/SectionHeading";
 import { learningDomains, programFacts, programObjectives } from "@/lib/site-content";
+import { fetchActivePrograms, fetchSiteSettings } from "@/lib/cms";
 import { PageHero } from "./about";
 import { CtaBand } from "./index";
 
